@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+     * {
+        margin: 0;
+        padding: 0;
+        border: none;
+        }
+        @font-face { 
+    font-family: 'helv'; 
+    src: url('HelveticaNowDisplay.otf');
+    } 
+    @font-face {
+        font-family: 'helvAlt';
+        font-feature-settings: "aalt"; 
+        src: url('HelveticaNowDisplay.otf');
+        font-feature-settings: "ss04";
+        unicode-range: U+0052,U+0052 ;}
+    .cover {
+        page: cover;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-color: black;
+        color: white;
+        }
+        body {
+            /* display: flex; */
+            height: 100vh;
+            font-weight: 100;
+            font-family: helv, helvAlt, Arial, sans-serif;
+            font-size:14px;
+            font-feature-settings: "ss04";
+            font-weight: lighter;
+            background-color: black;
+            color: white;
+        }
+
+        section {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+        }
+
+        .parent,
+        .right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            /* justify-content: center; */
+            align-items: center;
+            /* padding: 20px; */
+            /* this can add a frame*/
+            box-sizing: border-box;
+            max-width: 60%;
+            margin-left: 60px;
+            /* border: rgb(24, 185, 64) 1px solid; */
+        }
+
+        .parent {
+            position: relative;
+        }
+
+        .left, .topdiv, .bottomdiv {
+            background: url('https://source.unsplash.com/random/800x601') no-repeat center center;
+            background-size: cover;
+            /* border: blue 1px dashed; */
+            width: 100%;
+            height: 100vh;
+            /* adjust as needed */
+        }
+        .topdiv, .bottomdiv {
+            height: 50vh;
+            width:100%
+        }
+
+        .leftDoubleImage {
+            width: 100%;
+            height: 100vh;
+        }
+
+        .leftDoubleImage img {
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            /* border: blue 1px solid; */
+            width:auto;
+        }
+
+        .caption {
+            position: absolute;
+            bottom: 2em;
+            /* adjust as needed */
+            left: 2em;
+            width:calc(100% - 4em - 1em); 
+            /* adjust as needed */
+            color: black;
+            /* adjust as needed */
+            font-size: 1em;
+            line-height: 1.0em;
+            /* adjust as needed */
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 2px 5px;
+        }
+
+        .right {
+            /* background: #f0f0f0; */
+            /* border: rgb(221, 148, 39) 1px solid; */
+            padding: 3em;
+        }
+
+        h1 {
+            font-size: 6em;
+            font-weight: lighter;
+            text-transform: uppercase;
+            text-align: left;
+            margin-bottom: 20px;
+            width: 100%;
+            line-height:0.9em;
+        }
+        h2 {
+            text-align:left;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1em;
+            width: 100%;
+        }
+        h2::before{
+            content: "{";
+            line-height: 2em;
+        }
+        h2::after{
+            content: "}";
+        }
+        p {
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: #767676;
+            text-decoration: none;
+            font-size: 0.8em;
+            width:100%;
+            text-align: left;
+            word-wrap: break-word;
+        }
+        em{
+            font-size: inherit;
+            line-height: 3em;
+            width: 100%;
+        }
+        @media (max-width: 600px) {
+            *{            
+            margin: 0;
+            padding: 0;
+            border: none;}
+            body {
+                flex-direction: column;
+            }
+        }
+
+    @media print {
+        @page {
+            size: A4 landscape;
+            margin:1cm;
+            /* marks: crop cross;
+            bleed: 5mm; */
+            @bottom-center {
+    content: counter(page);
+  }
+         }
+         @page cover {
+  margin: 0; /* Use a full size page */
+
+  /* Remove page numbers for the cover */
+  @bottom-center {
+    content: none;
+  }
+}
+        @page :left {
+            margin-left: 1cm;
+        }
+        
+        @page :right {
+            margin-right: 1cm;
+        }
+        body {
+        width: 297mm;
+        height: 210mm;
+        margin: 0;
+        padding: 0;
+        page-break-after: always;  
+        font-size: 10pt;}
+        em {
+        text-align: left;
+        }
+        section {
+            min-height: calc(100% - 2cm);
+            height: 100vh;
+            display: flex;
+            page-break-inside: avoid;
+            page-break-after: always !important;
+        }
+        h1 {
+        font-size: 5em;
+        line-height: 0.8em;
+        }
+        h2 {
+        font-size: 1.5em;
+        }
+        p {
+        font-size: 0.8em;
+        }
+        em{
+            font-size: 10pt;
+            line-height: 3em;
+            width: 100%;
+        }
+    }
+    caption_url {
+        font-size: 0.8em;
+        color: #333;
+        background-color: white;
+        text-decoration: none;
+        font-size: 0.8em;
+        word-wrap: break-word;
+        width:80%;
+        text-align: left;
+    }
+    .navbar {
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  position: sticky;
+  top: -80px; 
+  z-index: 999;
+  transition: top 0.8s ease-in-out; 
+  background-color: #131313;
+}
+
+.navbar__container {
+  display: flex;
+  justify-content: space-between;
+  height: 80px;
+  z-index: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 50px;
+  background-color: black;
+
+}
+
+#navbar__logo {
+  background-color: #ffc908;
+  background-image: linear-gradient(to top, #ffb300 0%, #ffe585 100%);
+  background-size: 100%;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: 'custom-font';
+  font-size: 2rem;
+}
+.fa-gem {
+  margin-right: 0.5rem;
+}
+
+.navbar__menu {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  text-align: center;
+}
+.navbar__item {
+  height: 80px;
+
+}
+
+.navbar__links {
+  color: #ffc908;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 0rem 1rem;
+  height: 100%;
+  font-weight: bold;
+}
+
+.navbar__btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1rem;
+  width: 100%;
+}
+
+.button {
+  display: flex;
+  justify-content: center
+}
+.button:hover {
+  transition: all 0.3s ease-out;
+  background: #fff;
+}
+
+.navbar__links:hover {
+  color: #ff0844;
+  transition: all 0.3s ease;
+}
+
+@media screen and (max-width: 960px) {
+  .navbar__container {
+    display: flex;
+    justify-content: space-between;
+    height: 80px;
+    z-index: 1;
+    width: 100%;
+    max-width: 1300px;
+    padding: 0;
+  }
+  .navbar__menu {
+    display: grid;
+    grid-template-columns: auto;
+    margin: 0;
+  }
+}
+
+.button:hover {
+  transition: all 0.3s ease-out;
+  background: #fff;
+}
+
+.navbar__links:hover {
+  color: #ff0844;
+  transition: all 0.3s ease;
+}
+
+@media screen and (max-width: 960px) {
+  .navbar__container {
+    display: flex;
+    justify-content: space-between;
+    height: 80px;
+    z-index: 1;
+    width: 100%;
+    max-width: 1300px;
+    padding: 0;
+  }
+  .navbar__menu {
+    display: grid;
+    grid-template-columns: auto;
+    margin: 0;
+    width: 100%;
+    max-width: 1300px;
+    position: absolute;
+    top: -1000px;
+    opacity: 0;
+    transition: all 0.5s ease;
+    height: 50vh;
+    z-index: -1;
+    background: #131313;
+  }
+  .navbar__menu.active {
+    background: #131313;
+    top: 100%;
+    opacity: 1;
+    transition: all 0.5s ease;
+    z-index: 99;
+    height: 50vh;
+    font-size: 1.6rem;
+  }
+  #navbar__logo {
+    padding-left: 25px;
+  }
+  .navbar__toggle .bar {
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    transition: all 0.3s ease-in-out;
+    background: #000000;
+  }
+  .navbar__item {
+    width: 100%;
+  }
+  .navbar__links {
+    text-align: center;
+    padding: 2rem;
+    width: 100%;
+    display: table;
+  }
+
+  #mobile-menu {
+    position: absolute;
+    top: 20%;
+    right: 5%;
+    transform: translate(-5%, 20%);
+  }
+
+  .button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    height: 80%;
+    margin: 0;
+  }
+
+  .navbar__toggle .bar {
+    display: block;
+    cursor: pointer;
+  }
+
+  #mobile-menu.is-active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  #mobile-menu.is-active .bar:nth-child(1) {
+    transform: translateY(8px)rotate(45deg);
+  }
+  #mobile-menu.is-active .bar:nth-child(1) {
+    transform: translateY(-8px)rotate(-45deg);
+  }
+}
+
+/* Add new CSS rule */
+@media screen and (min-width: 960px) {
+  .navbar.sticky {
+    top: -80px; /* Move navbar off the screen */
+  }
+}
+    </style>
+</head>
+
+<body> 
+     <!-- Navbar -->
+     <nav class="navbar" style="background-color: white;">
+        <div class="navbar__container">
+          <a href="/" id="navbar__logo">Project 2</a>
+          <div class="navbar__toggle" id="mobile-menu">
+            <span class="bar"></span> <span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span>
+          </div>
+          <ul class="navbar__menu">
+            <li class="navbar__item">
+              <a href="../index.html" class="navbar__links">Home</a>
+            </li>
+            <li class="navbar__item">
+              <a href="workshops.html" class="navbar__links">Workshops</a>
+            </li>
+            <li class="navbar__item">
+              <a href="development.html" class="navbar__links">Development</a>
+            </li>
+            <li class="navbar__item">
+              <a href="research.html" class="navbar__links">Research</a>
+            </li>
+            <li class="navbar__btn">
+              <a href="about.html" class="button">About</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    <!-- THIS SECTION IS YOUR COVER PAGE -->
+    <section style="background-image: url(jagged_simple.jpg);">
+
+        <div class="right" style="background: none;color:rgb(0, 0, 0)">
+            <div>
+            <h1 style="line-height: 0.9;font-size: 4em; color: white;">INTERACTIVE MEDIA RESEARCH JOURNAL, 2024</h1>
+            <h2 style="color: white; font-size: 2em;">Tessa Atkinson # 1266985 | GDES30008 </h2>
+            <ol style="color: white;">
+                <li>Aristocrat</li>
+                <li>Benjamin Nespoulous</li>
+                <li>Karina Smigla-Bobinski</li>
+                <li>Lauren Lee McCarthy</li>
+                <li>Martin Gauer</li>
+                <li>Matt Benetto</li>
+                <li>Ned Kahn</li>
+                <li>Philip K Dicks Short stories- Limited edition</li>
+                <li>Rudolph de Harak</li>
+                <li>YXZ</li>
+            </ol></p>
+        </div>
+        </div>
+    </section>
+    <script>
+        /* THIS SCRIPT IS LOADED VIA CDN AND ESSENTIALLY READS THE .csv FILE ROW BY ROW 
+        TO GET THE VARIOUS `COMPONENTS` OF YOUR `JOURNAL` ONE `ENTRY` PER SECTION */
+        $(document).ready(function () {
+            Papa.parse('ResearchJournal.csv', {
+                download: true,
+                header: true,
+                complete: function (results) {
+                    results.data.forEach(function (row) {
+                        var section = $('<section>');
+                        var parentDiv = $('<div>').addClass('parent');
+                        var leftDiv = $('<div>').addClass(row['Class']);
+                        var topdiv = $('<div>').addClass('topdiv').css('background-image', 'url(' + row['ImageSrc'] + ')');
+                        var bottomdiv = $('<div>').addClass('bottomdiv').css('background-image', 'url(' + row['ImageSrc2'] + ')');
+                        var rightDiv = $('<div>').addClass('right');
+                        
+                        var h1 = $('<h1>').text(row['Title']);
+                        var h2 = $('<h2>').text(row['Description']);
+                        var p = $('<p>').text(row['BodyText']);
+                        var a = $('<a>').attr('href', '#').text(row['Link']);
+                        //var figure = $('<figure>');
+                        var img = $('<img>').attr('src', row['ImageSrc']);
+                        var img2 = $('<img>').attr('src', row['ImageSrc2']);
+                        //var figcaption = $('<figcaption>').text(row['Caption'].'\n'.$row['Caption2']);
+                        //figure.append(img, figcaption);
+                        if (row['Class'] == 'leftDoubleImage') {
+                            leftDiv.append(topdiv, bottomdiv);
+                            var captionText = 'Above: '+ row['Caption'] + ' | Below: ' + row['Caption2'];
+                            var captionDiv = $('<div>').addClass('caption').text(captionText);
+                        } else {
+                            leftDiv.css('background-image', 'url(' + row['ImageSrc'] + ')');
+                            leftDiv.css('background-size', 'cover');
+                            var captionDiv = $('<div>').addClass('caption').text(row['Caption']);
+                        }
+                        parentDiv.append(leftDiv, captionDiv);
+                        rightDiv.append(h1);
+                        var keyWords = row['Keywords'].split(', ');
+                        var span = '<p style="width:100%; line-height:2em;">';
+                        keyWords.forEach((keyword) => {
+                            span+='#' + keyword + '&nbsp;';
+                        });
+                        span+='</p>';
+                        rightDiv.append(h2, p, a, span);
+                        section.append(parentDiv, rightDiv);
+                        $('body').append(section);
+                    });
+                }
+            });
+        });
+    </script>
+     <!-- YOU CAN `UNCOMMENT` THIS SECTION AND EDIT IT TO TEST ANY STRUCTURAL OR STYLE CHANGES YOU MIGHT WANT TO MAKE
+        YOU COULD ALSO COPY A NUMBER OF THESE SECTIONS IF YOU PREFER TO WORK WITH A STATIC TEMPLATE, JUST CHANGE TH EIMAGES AND TEXTS MANUALLY. -->
+    <!-- 
+    <section>
+        <div class="parent">
+            <div class="left"></div>
+            <div class="caption">Your caption goes here, with <span class="caption_title">A Title, </span>Author, &
+                <span class="caption_url">url</span></div>
+        </div>
+        <div class="right">
+            <h1>Header</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc at bibendum dapibus, risus
+                ante dapibus est, a feugiat turpis elit id eros.</p>
+            <a href="#">Read more</a>
+        </div>
+    </section> -->
+</body>
+
+</html>
